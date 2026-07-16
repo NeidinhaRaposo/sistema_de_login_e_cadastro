@@ -1,0 +1,774 @@
+/* ===== DESIGN FUTURISTA - SISTEMA DE LOGIN ===== */
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --neon-cyan: #00ffff;
+    --neon-pink: #ff00ff;
+    --neon-green: #00ff41;
+    --neon-blue: #0066ff;
+    --neon-purple: #8a2be2;
+    --neon-yellow: #ffff00;
+    --dark-bg: #0a0a0a;
+    --darker-bg: #050505;
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --text-primary: #ffffff;
+    --text-secondary: #b0b0b0;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Rajdhani', sans-serif;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #533483 100%);
+    min-height: 100vh;
+    color: var(--text-primary);
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Efeito de partículas de fundo */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(circle at 20% 80%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 0, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(0, 255, 65, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: -1;
+    animation: backgroundShift 20s ease-in-out infinite;
+}
+
+@keyframes backgroundShift {
+    0%, 100% { transform: translateX(0) translateY(0); }
+    25% { transform: translateX(-10px) translateY(-10px); }
+    50% { transform: translateX(10px) translateY(-5px); }
+    75% { transform: translateX(-5px) translateY(10px); }
+}
+
+/* Logo no canto superior esquerdo */
+.sidebar-img {
+    position: fixed;
+    left: 20px;
+    top: 20px;
+    width: 100px;
+    height: auto;
+    z-index: 1000;
+}
+
+.sidebar-img img {
+    max-width: 100px;
+    width: 100px;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 0 15px var(--neon-cyan));
+    transition: all 0.3s ease;
+}
+
+.sidebar-img:hover img {
+    filter: drop-shadow(0 0 25px var(--neon-pink));
+    transform: scale(1.1);
+}
+
+/* Logo no canto inferior direito */
+.bottom-right-img {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    width: 100px;
+    height: auto;
+    z-index: 1000;
+}
+
+.bottom-right-img img {
+    max-width: 100px;
+    width: 100px;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 0 15px var(--neon-purple));
+    transition: all 0.3s ease;
+}
+
+.bottom-right-img:hover img {
+    filter: drop-shadow(0 0 25px var(--neon-yellow));
+    transform: scale(1.1);
+}
+
+/* LOGIN & CADASTRO */
+.auth-container {
+    position: relative;
+    width: 340px;
+    margin: 0 auto;
+    padding: 24px 20px;
+    background: #0c442b;
+    border-radius: 20px;
+    border: 2px solid #cfb861;
+    box-shadow: 0 0 24px #34644455, 0 0 8px #81954f88;
+    min-height: 600px;
+    overflow: hidden;
+    font-size: 0.95em;
+    margin-top: 16px;
+}
+
+.auth-container.slide {
+    min-height: 600px;
+}
+
+.auth-section {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.8s;
+    font-size: 0.95em;
+}
+
+.login-section { transform: translateX(0); z-index: 2; }
+.register-section { transform: translateX(100%); z-index: 1; }
+.auth-container.slide .login-section { transform: translateX(-100%); z-index: 1; }
+.auth-container.slide .register-section { transform: translateX(0); z-index: 2; }
+
+/* Painel do usuário */
+.painel-container, .container.painel {
+    max-width: 400px;
+    margin: 40px auto;
+    padding: 32px 24px;
+    background: #0c442b;
+    border-radius: 20px;
+    border: 2px solid #cfb861;
+    box-shadow: 0 0 24px #34644455, 0 0 8px #81954f88;
+}
+
+/* Painel administrativo */
+.admin-container {
+    max-width: 1100px !important;
+    margin: 40px auto !important;
+    padding: 32px 24px !important;
+    background: #0c442b !important;
+    border-radius: 24px !important;
+    border: 2px solid #cfb861 !important;
+    box-shadow: 0 0 24px #34644455, 0 0 8px #81954f88 !important;
+}
+
+.admin-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    margin-bottom: 18px;
+}
+.admin-header img, .admin-header .icon {
+    width: 32px;
+    height: 32px;
+    margin-right: 8px;
+}
+.admin-header p {
+    font-size: 1.7em !important;
+    text-align: center !important;
+    margin-bottom: 24px !important;
+    margin-top: 12px !important;
+    width: 100%;
+    display: block;
+}
+.stats-container {
+    margin-top: 0 !important;
+}
+/* Remover duplicidade de campos na tabela: garantir que apenas .display-text apareça, nunca .edit-input quando não estiver editando. */
+.admin-table td .edit-input { display: none !important; }
+.admin-table tr.editando td .edit-input { display: inline-block !important; }
+.admin-table tr.editando td .display-text { display: none !important; }
+.admin-table tr:not(.editando) td .display-text { display: inline !important; }
+
+/* Cards de usuário/admin */
+.card, .user-info {
+    background: #346444;
+    color: #fff;
+    border-radius: 12px;
+    padding: 12px 18px;
+    margin-bottom: 12px;
+    box-shadow: 0 0 8px #81954f55;
+}
+
+/* Container principal */
+.container, .admin-container, .card {
+    max-width: 400px;
+    margin: 40px auto;
+    padding: 32px 24px;
+    background: #0c442b;
+    border-radius: 20px;
+    border: 2px solid #cfb861;
+    box-shadow: 0 0 24px #34644455, 0 0 8px #81954f88;
+    display: block;
+}
+
+.container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s;
+}
+
+.container:hover::before {
+    left: 100%;
+}
+
+.container h2, .container h3 {
+    font-family: 'Orbitron', monospace;
+    color: var(--neon-cyan);
+    text-align: center;
+    margin-bottom: 30px;
+    text-shadow: 0 0 10px var(--neon-cyan);
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+/* Inputs futuristas */
+input, select {
+    width: 100%;
+    padding: 15px 20px;
+    margin: 12px 0;
+    border: 2px solid var(--glass-border);
+    border-radius: 15px;
+    font-size: 16px;
+    font-family: 'Rajdhani', sans-serif;
+    background: rgba(0, 0, 0, 0.3);
+    color: var(--text-primary);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+input::placeholder {
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--neon-cyan);
+    box-shadow: 
+        0 0 20px rgba(0, 255, 255, 0.3),
+        inset 0 0 10px rgba(0, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.5);
+    transform: translateY(-2px);
+}
+
+/* Botões futuristas */
+button, .logout-btn {
+    width: 100%;
+    padding: 15px 30px;
+    margin: 15px 0;
+    border: none;
+    border-radius: 15px;
+    font-size: 16px;
+    font-family: 'Orbitron', monospace;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+button::before, .logout-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+button:hover::before, .logout-btn:hover::before {
+    left: 100%;
+}
+
+button:hover, .logout-btn:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+/* Links futuristas */
+a {
+    color: var(--neon-green);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--neon-green);
+    transition: width 0.3s ease;
+}
+
+a:hover {
+    color: var(--neon-cyan);
+    text-shadow: 0 0 10px var(--neon-cyan);
+}
+
+a:hover::after {
+    width: 100%;
+}
+
+/* Estatísticas futuristas */
+.stats-container {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 24px !important;
+    margin-bottom: 24px !important;
+    justify-content: center !important;
+    align-items: stretch !important;
+    text-align: center !important;
+}
+
+.stat-card {
+    flex: 1 1 220px !important;
+    min-width: 180px !important;
+    max-width: 300px !important;
+    margin: 0 !important;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    padding: 30px;
+    border-radius: 20px;
+    border: 1px solid var(--glass-border);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--neon-cyan);
+    box-shadow: 
+        0 15px 40px rgba(0, 0, 0, 0.4),
+        0 0 30px rgba(0, 255, 255, 0.2);
+}
+
+.stat-number {
+    font-family: 'Orbitron', monospace;
+    font-size: 3em;
+    font-weight: 900;
+    color: var(--neon-green);
+    text-shadow: 0 0 20px var(--neon-green);
+    margin-bottom: 10px;
+}
+
+.stat-label {
+    color: var(--text-secondary);
+    font-size: 1.1em;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Tabela futurista */
+.admin-table {
+    width: 100% !important;
+    padding-right: 0 !important;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 30px 0;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--glass-border);
+    font-size: 0.95em !important;
+}
+
+.admin-table thead {
+    position: relative;
+    z-index: 1;
+}
+.admin-table thead::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--neon-purple), var(--neon-blue));
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    z-index: -1;
+}
+.admin-table th {
+    background: transparent !important;
+    position: relative;
+    z-index: 2;
+    color: var(--text-primary);
+    font-family: 'Orbitron', monospace;
+    font-weight: 700;
+    padding: 8px 6px !important;
+    text-align: left;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    border-radius: 0 !important;
+}
+.admin-table th:first-child {
+    border-top-left-radius: 20px !important;
+}
+.admin-table th:last-child {
+    border-top-right-radius: 20px !important;
+}
+
+.admin-table td {
+    padding: 8px 6px !important;
+    border-bottom: 1px solid var(--glass-border);
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+}
+
+.admin-table tr:hover {
+    background: rgba(0, 255, 255, 0.1);
+    box-shadow: inset 0 0 20px rgba(0, 255, 255, 0.1);
+}
+
+.admin-table tr:last-child td {
+    border-bottom: none;
+}
+
+.admin-table td .edit-input,
+.admin-table td .edit-input input,
+.admin-table td .edit-input select,
+.admin-table td .edit-input div {
+    display: inline-block !important;
+    min-width: 80px !important;
+    margin: 2px 2px 2px 0 !important;
+    vertical-align: middle !important;
+}
+.admin-table td .edit-input input[type="time"] {
+    width: 80px !important;
+}
+.admin-table td .edit-input input[type="number"] {
+    width: 90px !important;
+}
+.admin-table td .edit-input input[type="text"],
+.admin-table td .edit-input input[type="email"] {
+    width: 120px !important;
+}
+.admin-table td select.edit-input {
+    min-width: 90px !important;
+}
+.admin-table td select.action-select {
+    min-width: 120px !important;
+    display: inline-block !important;
+    margin: 0 !important;
+    font-size: 1em !important;
+    font-family: 'Rajdhani', sans-serif !important;
+    font-weight: 600 !important;
+    background: #81954f !important;
+    color: #0c442b !important;
+    border: 2px solid #cfb861 !important;
+    border-radius: 10px !important;
+    padding: 6px 12px !important;
+    transition: all 0.3s !important;
+}
+.admin-table td select.action-select:focus, .admin-table td select.action-select.editando {
+    border-color: #346444 !important;
+    background: #cfb861 !important;
+    color: #0c442b !important;
+}
+
+/* Select de ações futurista */
+.action-select {
+    min-width: 120px;
+    display: inline-block;
+    margin: 0;
+    font-size: 1em;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    background: #81954f;
+    color: #0c442b;
+    border: 2px solid #cfb861;
+    border-radius: 10px;
+    padding: 6px 12px;
+    transition: all 0.3s;
+}
+.action-select:focus, .action-select.editando {
+    border-color: #346444;
+    background: #cfb861;
+    color: #0c442b;
+}
+
+/* Botões de cores específicas */
+.btn-amarelo {
+    background: #cfb861;
+    color: #0c442b;
+    border: none;
+    border-radius: 14px;
+    font-family: 'Orbitron', monospace;
+    font-size: 1.1em;
+    font-weight: 700;
+    padding: 13px 0;
+    margin-top: 10px;
+    width: 100%;
+    letter-spacing: 1px;
+    box-shadow: 0 0 10px #cfb86155;
+    text-transform: uppercase;
+    transition: all 0.3s;
+    display: block;
+    text-align: center;
+}
+.btn-amarelo:hover {
+    background: #81954f;
+    color: #fff;
+}
+
+.btn-verde {
+    background: linear-gradient(135deg, var(--neon-green), #00cc33) !important;
+    color: var(--dark-bg) !important;
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.3) !important;
+    font-weight: 700 !important;
+    border: none !important;
+    transition: all 0.3s ease !important;
+}
+
+.btn-verde:hover {
+    background: linear-gradient(135deg, #00cc33, var(--neon-green)) !important;
+    color: var(--dark-bg) !important;
+    box-shadow: 0 0 30px rgba(0, 255, 65, 0.5) !important;
+    transform: translateY(-3px) scale(1.02) !important;
+}
+
+/* Mensagens futuristas */
+.messages {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    max-width: 500px;
+}
+
+.messages ul {
+    color: var(--neon-yellow);
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    padding: 20px 25px;
+    border-radius: 15px;
+    margin: 0;
+    list-style: none;
+    border: 1px solid var(--neon-yellow);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        0 0 20px rgba(255, 255, 0, 0.2);
+    animation: messageSlideIn 0.5s ease-out;
+}
+
+@keyframes messageSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .sidebar-img {
+        left: 10px;
+        top: 10px;
+        width: 80px;
+    }
+    
+    .sidebar-img img {
+        max-width: 80px;
+        width: 80px;
+    }
+    
+    .bottom-right-img {
+        right: 10px;
+        bottom: 10px;
+        width: 80px;
+    }
+    
+    .bottom-right-img img {
+        max-width: 80px;
+        width: 80px;
+    }
+    
+    .container, .admin-container, .card {
+        max-width: 98vw;
+        padding: 16px 4vw;
+    }
+    
+    .admin-container {
+        padding: 16px 4vw;
+    }
+    
+    .stats-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .admin-table {
+        font-size: 14px;
+    }
+    
+    .admin-table th,
+    .admin-table td {
+        padding: 10px 8px;
+    }
+}
+
+@media (max-width: 600px) {
+    .auth-container, .painel-container, .container.painel, .admin-container, .card, .user-info {
+        max-width: 98vw;
+        padding: 16px 4vw;
+    }
+}
+
+@media (max-width: 1100px) {
+    .admin-container {
+        margin: 20px 2vw !important;
+    }
+}
+
+@media (max-width: 800px) {
+    .stats-container {
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+    .admin-container {
+        margin: 10px 0 !important;
+        padding: 8px 2vw !important;
+    }
+    .admin-table {
+        font-size: 13px !important;
+        padding-right: 0 !important;
+    }
+}
+
+/* Animações de entrada */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.container, .admin-container, .card {
+    animation: fadeInUp 0.8s ease-out;
+}
+
+/* Scrollbar futurista */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--dark-bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--neon-cyan), var(--neon-purple));
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, var(--neon-purple), var(--neon-cyan));
+}
+
+/* Botões de alternância menores */
+.toggle-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+    width: 100%;
+    margin-top: 18px;
+    margin-bottom: 0;
+    position: relative;
+}
+.toggle-btn {
+    background: #81954f;
+    border: 2px solid #cfb861;
+    color: #fff;
+    font-family: 'Orbitron', monospace;
+    font-size: 1em;
+    font-weight: 700;
+    border-radius: 14px;
+    padding: 7px 18px;
+    cursor: pointer;
+    transition: all 0.3s;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    z-index: 1;
+}
+.toggle-btn.active, .toggle-btn:focus {
+    background: #cfb861;
+    color: #0c442b;
+    border-color: #81954f;
+    box-shadow: 0 0 10px #cfb86199;
+    z-index: 2;
+}
+
+.admin-link {
+    text-align: center;
+    margin-top: 24px;
+    margin-bottom: 0;
+}
+.admin-link a {
+    color: #0c442b;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.1em;
+    padding: 12px 28px;
+    border: 2px solid #cfb861;
+    border-radius: 16px;
+    transition: all 0.3s;
+    background: #cfb861;
+    font-family: 'Orbitron', monospace;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    display: inline-block;
+    margin-top: 0;
+}
+.admin-link a:hover {
+    background: #81954f;
+    color: #fff;
+    border-color: #346444;
+    box-shadow: 0 0 18px #81954f99;
+    text-shadow: 0 0 6px #81954f;
+}

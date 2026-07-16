@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Neidiman Raposo - Login/Cadastro</title>
+    <link rel='stylesheet' href='/static/style.css?v=2'>
+</head>
+<body>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="messages">
+          <ul>
+            {% for message in messages %}
+              <li>{{ message|safe }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+    {% endwith %}
+    <div class="sidebar-img">
+        <img src="{{ url_for('static', filename='img/Logo - Raposa e o meu Rosto - SemiTransparente.png') }}" alt="Logo" />
+    </div>
+    <div class="bottom-right-img">
+        <img src="{{ url_for('static', filename='img/Logo - Raposa e o meu Rosto - SemiTransparente.png') }}" alt="Logo Raposa" />
+    </div>
+    <div class="auth-container" id="authContainer">
+        <div class="auth-section login-section">
+            <h2>LOGIN</h2>
+            <form method="POST" action="/login" autocomplete="on">
+                <input type="email" name="email" placeholder="Email" required autocomplete="username" autofocus>
+                <input type="password" name="senha" placeholder="Senha" required autocomplete="current-password">
+                <button type="submit" class="btn-verde">ENTRAR</button>
+            </form>
+            <div class="toggle-buttons">
+                <button class="toggle-btn active" onclick="showLogin()">LOGIN</button>
+                <button class="toggle-btn" onclick="showRegister()">CADASTRO</button>
+            </div>
+        </div>
+        <div class="auth-section register-section">
+            <h2>CADASTRO</h2>
+            <form method="POST" action="/" autocomplete="on">
+                <input type="text" name="nome" placeholder="Nome" required autocomplete="name">
+                <input type="text" name="cpf" placeholder="CPF" required autocomplete="off">
+                <input type="email" name="email" placeholder="Email" required autocomplete="email">
+                <input type="password" name="senha" placeholder="Senha" required autocomplete="new-password">
+                <button type="submit" class="btn-amarelo">CADASTRAR</button>
+            </form>
+            <div class="toggle-buttons">
+                <button class="toggle-btn" onclick="showLogin()">LOGIN</button>
+                <button class="toggle-btn active" onclick="showRegister()">CADASTRO</button>
+            </div>
+        </div>
+    </div>
+    <div class="admin-link">
+        <a href="/admin/login">LOGIN ADMINISTRATIVO</a>
+    </div>
+    <script>
+        function showLogin() {
+            document.getElementById('authContainer').classList.remove('slide');
+            document.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.toggle-btn')[0].classList.add('active');
+            document.querySelectorAll('.toggle-btn')[2].classList.remove('active');
+        }
+        function showRegister() {
+            document.getElementById('authContainer').classList.add('slide');
+            document.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.toggle-btn')[1].classList.add('active');
+            document.querySelectorAll('.toggle-btn')[3].classList.add('active');
+        }
+    </script>
+</body>
+</html>

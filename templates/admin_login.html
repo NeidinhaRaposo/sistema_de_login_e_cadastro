@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Neidiman Raposo - Login Administrativo</title>
+    <link rel='stylesheet' href='/static/style.css'>
+</head>
+<body class="admin-login">
+    <div class="sidebar-img">
+        <img src="{{ url_for('static', filename='img/Logo - Raposa e o meu Rosto - SemiTransparente.png') }}" alt="Logo" />
+    </div>
+    <div class="bottom-right-img">
+        <img src="{{ url_for('static', filename='img/Logo - Raposa e o meu Rosto - SemiTransparente.png') }}" alt="Logo Raposa" />
+    </div>
+    <div class="container">
+        <h2>🔐 Login Administrativo</h2>
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <ul style="color:#FFD700; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+              {% for msg in messages %}
+                <li>{{ msg }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+        <form method="POST" action="/admin/login" autocomplete="on">
+            <input type="email" name="email" placeholder="Email" required autocomplete="username" autofocus>
+            <input type="password" name="senha" placeholder="Senha" required autocomplete="current-password">
+            <button type="submit">Entrar</button>
+        </form>
+        <p style="text-align: center; margin-top: 20px;">
+            <a href="/login">Voltar ao Login Normal</a>
+        </p>
+    </div>
+</body>
+</html> 

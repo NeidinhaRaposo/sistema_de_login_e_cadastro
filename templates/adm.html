@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin - Usuários</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="sidebar-img">
+        <img src="{{ url_for('static', filename='img/Logo - Raposa e o meu Rosto - SemiTransparente.png') }}" alt="Logo" />
+    </div>
+    <div class="bottom-right-img">
+        <img src="{{ url_for('static', filename='img/Logo - Raposa e o meu Rosto - SemiTransparente.png') }}" alt="Logo Raposa" />
+    </div>
+    <div class="container">
+        <h2>Admin - Todos os usuários</h2>
+        {% for u in usuarios %}
+          <div class="user-info">
+            <p><strong>{{ u['nome'] }}</strong> - {{ u['email'] }}</p>
+            <p>CPF: {{ u['cpf'] }} - Idade: {{ u.get('idade', 'N/A') }} anos</p>
+          </div>
+        {% endfor %}
+        <a href="/logout">Sair</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Painel Administrativo</title>
+    <link rel='stylesheet' href='/static/style.css'>
+</head>
+<body>
+    <div class="sidebar-img">
+        <img src="{{ url_for('static', filename='img/Logo - Raposa e o meu Rosto - SemiTransparente.png') }}" alt="Logo" />
+    </div>
+    <div class="bottom-right-img">
+        <img src="{{ url_for('static', filename='img/Logo - Raposa e o meu Rosto - SemiTransparente.png') }}" alt="Logo Raposa" />
+    </div>
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1 style="color: #0c442b;">🛠️ Painel Administrativo</h1>
+            <p style="color: #cfb861;">Gerencie todos os profissionais do sistema</p>
+        </div>
+
+        <!-- Campo de Busca -->
+        <div style="margin: 20px 0 10px 0; text-align: right;">
+            <input id="busca-profissional" type="text" placeholder="Buscar profissional..." style="padding: 8px; border-radius: 8px; border: 1px solid #ccc; width: 250px; font-size: 16px;">
+        </div>
+
+        <!-- Estatísticas -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-number">{{ profissionais|length }}</div>
+                <div class="stat-label" style="color: #81954f;">Total de Profissionais</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ profissionais|selectattr('status', 'equalto', 'ATIVO')|list|length }}</div>
+                <div class="stat-label" style="color: #81954f;">Profissionais Ativos</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ profissionais|selectattr('status', 'equalto', 'INATIVO')|list|length }}</div>
+                <div class="stat-label" style="color: #81954f;">Profissionais Inativos</div>
+            </div>
+        </div>
+
+        <!-- Tabela de Profissionais -->
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Email</th>
+                    <th>CPF</th>
+                    <th>Profissão</th>
+                    <th>Horário</th>
+                    <th>Salário</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for prof in profissionais %}
+                <tr data-user-id="{{ prof.id }}">
+                    <td>
+                        <div class="display-mode">
+                            <span>{{ prof.profile.nome if prof.profile and prof.profile.nome else 'Nome não informado' }}</span>
+                        </div>
+                        <div class="edit-mode" style="display: none;">
+                            <input type="text" value="{{ prof.profile.nome if prof.profile and prof.profile.nome else '' }}">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="display-mode">
+                            <span>{{ prof.profile.email if prof.profile and prof.profile.email and prof.profile.email != 'None' else 'Email não informado' }}</span>
+                        </div>
+                        <div class="edit-mode" style="display: none;">
+                            <input type="email" value="{{ prof.profile.email if prof.profile and prof.profile.email and prof.profile.email != 'None' else '' }}">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="display-mode">
+                            <span>{{ prof.profile.cpf if prof.profile and prof.profile.cpf else 'CPF não informado' }}</span>
+                        </div>
+                        <div class="edit-mode" style="display: none;">
+                            <input type="text" value="{{ prof.profile.cpf if prof.profile and prof.profile.cpf else '' }}">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="display-mode">
+                            <span>{{ prof.profissao or 'Profissão não informada' }}</span>
+                        </div>
+                        <div class="edit-mode" style="display: none;">
+                            <input type="text" value="{{ prof.profissao }}">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="display-mode">
+                            <span>{{ prof.horario_inicio }} - {{ prof.horario_saida }}</span>
+                        </div>
+                        <div class="edit-mode" style="display: none;">
+                            <input type="time" value="{{ prof.horario_inicio }}" style="width: 80px; margin: 2px;">
+                            <input type="time" value="{{ prof.horario_saida }}" style="width: 80px; margin: 2px;">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="display-mode">
+                            <span>R$ {{ "%.2f"|format(prof.salario|float) if prof.salario else '0.00' }}</span>
+                        </div>
+                        <div class="edit-mode" style="display: none;">
+                            <input type="number" step="0.01" value="{{ prof.salario }}">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="display-mode">
+                            <span>{{ prof.status }}</span>
+                        </div>
+                        <div class="edit-mode" style="display: none;">
+                            <select>
+                                <option value="ATIVO" {% if prof.status == 'ATIVO' %}selected{% endif %}>ATIVO</option>
+                                <option value="INATIVO" {% if prof.status == 'INATIVO' %}selected{% endif %}>INATIVO</option>
+                            </select>
+                        </div>
+                    </td>
+                    <td>
+                        <select class="action-select" onchange="handleAction(this, '{{ prof.id }}')">
+                            <option value="">Selecione...</option>
+                            <option value="edit">✏️ Editar</option>
+                            <option value="save">💾 Salvar</option>
+                            <option value="delete">🗑️ Excluir</option>
+                        </select>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Botão Sair -->
+        <div class="logout-container">
+            <a href="/logout" class="logout-btn">🚪 Sair</a>
+        </div>
+    </div>
+
+    <script>
+        function handleAction(select, userId) {
+            const action = select.value;
+            const row = select.closest('tr');
+            document.querySelectorAll('.admin-table tr').forEach(function(r) {
+                if (r !== row) {
+                    r.querySelectorAll('.display-mode').forEach(el => el.style.display = 'block');
+                    r.querySelectorAll('.edit-mode').forEach(el => el.style.display = 'none');
+                }
+            });
+            if (action === 'edit') {
+                row.querySelectorAll('.display-mode').forEach(el => el.style.display = 'none');
+                row.querySelectorAll('.edit-mode').forEach(el => el.style.display = 'block');
+                select.value = '';
+            } else if (action === 'save') {
+                row.querySelectorAll('.display-mode').forEach(el => el.style.display = 'block');
+                row.querySelectorAll('.edit-mode').forEach(el => el.style.display = 'none');
+                const formData = new FormData();
+                formData.append('nome', row.querySelector('td:nth-child(1) .edit-mode input').value);
+                formData.append('email', row.querySelector('td:nth-child(2) .edit-mode input').value);
+                formData.append('cpf', row.querySelector('td:nth-child(3) .edit-mode input').value);
+                formData.append('profissao', row.querySelector('td:nth-child(4) .edit-mode input').value);
+                const horarioInputs = row.querySelector('td:nth-child(5) .edit-mode').querySelectorAll('input');
+                formData.append('horario_inicio', horarioInputs[0].value);
+                formData.append('horario_saida', horarioInputs[1].value);
+                formData.append('salario', row.querySelector('td:nth-child(6) .edit-mode input').value);
+                formData.append('status', row.querySelector('td:nth-child(7) .edit-mode select').value);
+                fetch(`/admin/editar/${userId}`, {
+                    method: 'POST',
+                    body: formData
+                }).then(() => {
+                    window.location.reload();
+                });
+            } else if (action === 'delete') {
+                row.querySelectorAll('.display-mode').forEach(el => el.style.display = 'block');
+                row.querySelectorAll('.edit-mode').forEach(el => el.style.display = 'none');
+                if (confirm('Tem certeza que deseja excluir este profissional?')) {
+                    const formData = new FormData();
+                    fetch(`/admin/excluir/${userId}`, {
+                        method: 'POST',
+                        body: formData
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                }
+                select.value = '';
+            }
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.admin-table tr').forEach(function(row) {
+                row.querySelectorAll('.display-mode').forEach(el => el.style.display = 'block');
+                row.querySelectorAll('.edit-mode').forEach(el => el.style.display = 'none');
+            });
+        });
+        const inputBusca = document.getElementById('busca-profissional');
+        if (inputBusca) {
+            inputBusca.addEventListener('input', function() {
+                const termo = this.value.toLowerCase();
+                document.querySelectorAll('.admin-table tbody tr').forEach(function(row) {
+                    const textoLinha = row.innerText.toLowerCase();
+                    row.style.display = textoLinha.includes(termo) ? '' : 'none';
+                });
+            });
+        }
+    </script>
+</body>
+</html>

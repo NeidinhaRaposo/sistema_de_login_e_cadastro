@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dados do Cadastro</title>
+    <link rel='stylesheet' href='/static/style.css'>
+</head>
+<body>
+    <div class="sidebar-img">
+        <img src="{{ url_for('static', filename='img/Logo - Raposa e o meu Rosto - SemiTransparente.png') }}" alt="Logo" />
+    </div>
+    <div class="bottom-right-img">
+        <img src="{{ url_for('static', filename='img/Logo - Raposa e o meu Rosto - SemiTransparente.png') }}" alt="Logo Raposa" />
+    </div>
+    <div class="container">
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <ul style="color:yellow;">
+              {% for message in messages %}
+                <li>{{ message|safe }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+        
+        <h2>Bem-vindo(a) {{ usuario['nome'] }}</h2>
+        
+        <!-- Dados do Cadastro -->
+        <h3>Dados do Cadastro</h3>
+        <form method="POST">
+            <input name="nome" placeholder="Nome" value="{{ usuario['nome'] }}" required>
+            <input name="cpf" placeholder="CPF" value="{{ usuario['cpf'] }}" required>
+            <button type="submit">Atualizar Dados</button>
+        </form>
+        
+        <!-- Dados Profissionais -->
+        <h3>Dados Profissionais</h3>
+        <form method="POST" action="/salvar_profissional">
+            <input name="profissao" placeholder="Profissão" value="{{ profissional.profissao if profissional else '' }}" required>
+            <input name="horario_inicio" type="time" placeholder="Horário de Início" value="{{ profissional.horario_inicio if profissional else '' }}" required>
+            <input name="horario_saida" type="time" placeholder="Horário de Saída" value="{{ profissional.horario_saida if profissional else '' }}" required>
+            <input name="salario" type="number" step="0.01" placeholder="Salário" value="{{ profissional.salario if profissional else '' }}" required>
+            <select name="status" required>
+                <option value="ATIVO" {% if profissional and profissional.status == 'ATIVO' %}selected{% endif %}>Ativo</option>
+                <option value="INATIVO" {% if profissional and profissional.status == 'INATIVO' %}selected{% endif %}>Inativo</option>
+            </select>
+            <button type="submit">Salvar Dados Profissionais</button>
+        </form>
+        
+        <p style="text-align: center; margin-top: 20px;">
+            <a href="/logout" class="logout-btn">Sair</a>
+        </p>
+    </div>
+</body>
+</html>
+
